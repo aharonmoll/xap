@@ -31,6 +31,8 @@ public class CommonSystemProperties {
 
     public static final String MULTICAST_ENABLED_PROPERTY = "com.gs.multicast.enabled";
 
+    public static final String MULTICAST_DISCOVERY_PORT = "com.gs.multicast.discoveryPort";
+
     /**
      * If true the default xap_logging.properties file will not be loaded and none of the GS log
      * handlers will be set to the LogManager.
