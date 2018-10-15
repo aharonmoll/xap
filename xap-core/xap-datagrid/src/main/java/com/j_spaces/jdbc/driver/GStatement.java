@@ -16,6 +16,7 @@
 
 package com.j_spaces.jdbc.driver;
 
+import com.gigaspaces.logger.Constants;
 import com.j_spaces.jdbc.ResponsePacket;
 import com.j_spaces.jdbc.ResultEntry;
 
@@ -27,6 +28,8 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The Statement implementation using a GConnection and a GResultSet
@@ -40,6 +43,12 @@ public class GStatement implements Statement {
     protected int updateCount = -1; ///default or no results.
     protected ResultSet resultSet = null;
     protected List<String> _queriesBatch;
+
+    //logger
+    final private static Logger _logger = Logger.getLogger(Constants.LOGGER_QUERY);
+
+    //user configured behavior with unsupported sql operations
+    final private static boolean THROW_EXCEPTION_ON_UNSUPPORTED_SQL_OPERATION = Boolean.parseBoolean(System.getProperty("com.gigaspaces.jdbc.unsupported-sql-operations-throw-exception","true"));
 
     public GStatement(GConnection connection) {
         this.connection = connection;
@@ -127,7 +136,7 @@ public class GStatement implements Statement {
      * @see java.sql.Statement#cancel()
      */
     public void cancel() throws SQLException {
-        throw new SQLException("Command not Supported!", "GSP", -132);
+        handleUnsupportedSqlOperationsCalls();
     }
 
     /* (non-Javadoc)
@@ -193,14 +202,14 @@ public class GStatement implements Statement {
      * @see java.sql.Statement#setFetchDirection(int)
      */
     public void setFetchDirection(int direction) throws SQLException {
-        throw new SQLException("Command not Supported!", "GSP", -132);
+        handleUnsupportedSqlOperationsCalls();
     }
 
     /* (non-Javadoc)
      * @see java.sql.Statement#setFetchSize(int)
      */
     public void setFetchSize(int rows) throws SQLException {
-        throw new SQLException("Command not Supported!", "GSP", -132);
+        handleUnsupportedSqlOperationsCalls();
     }
 
     /**
@@ -209,7 +218,7 @@ public class GStatement implements Statement {
      * @see java.sql.Statement#setMaxFieldSize(int)
      */
     public void setMaxFieldSize(int max) throws SQLException {
-        throw new SQLException("Command not Supported!", "GSP", -132);
+        handleUnsupportedSqlOperationsCalls();
     }
 
     /**
@@ -218,7 +227,7 @@ public class GStatement implements Statement {
      * @see java.sql.Statement#setMaxRows(int)
      */
     public void setMaxRows(int max) throws SQLException {
-        throw new SQLException("Command not Supported!", "GSP", -132);
+        handleUnsupportedSqlOperationsCalls();
     }
 
     /**
@@ -279,7 +288,7 @@ public class GStatement implements Statement {
      * @see java.sql.Statement#setCursorName(java.lang.String)
      */
     public void setCursorName(String name) throws SQLException {
-        throw new SQLException("Command not Supported!", "GSP", -132);
+        handleUnsupportedSqlOperationsCalls();
     }
 
     /* (non-Javadoc)
@@ -432,5 +441,18 @@ public class GStatement implements Statement {
 
     public boolean isCloseOnCompletion() throws SQLException {
         throw new UnsupportedOperationException();
+    }
+
+    private void handleUnsupportedSqlOperationsCalls() throws SQLException {
+
+        if(THROW_EXCEPTION_ON_UNSUPPORTED_SQL_OPERATION){
+            throw new SQLException("Command not Supported!", "GSP", -132);
+        }
+
+        if(_logger.isLoggable(Level.WARNING)){
+            _logger.warning("An unsupported sql command was called and ignored ");
+        }
+
+        return;
     }
 }
