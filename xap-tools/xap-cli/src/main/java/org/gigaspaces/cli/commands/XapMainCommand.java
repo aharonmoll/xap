@@ -7,6 +7,7 @@ import picocli.CommandLine.*;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 @Command(name="xap", headerHeading = XapMainCommand.HEADER, customSynopsis = "xap [global-options] command [options] [parameters]")
 public class XapMainCommand extends CliCommand implements SubCommandContainer {
@@ -34,5 +35,16 @@ public class XapMainCommand extends CliCommand implements SubCommandContainer {
                 new DemoCommand(),
                 new ProcessingUnitCommand(),
                 new SpaceCommand());
+    }
+
+
+    protected static void addOrReplace(List<Object> list, Object item) {
+        for (int i=0 ; i < list.size() ; i++) {
+            if (list.get(i).getClass().getSimpleName().equals(item.getClass().getSimpleName())) {
+                list.set(i, item);
+                return;
+            }
+        }
+        list.add(item);
     }
 }
