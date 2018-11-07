@@ -6,6 +6,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.*;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -66,14 +67,45 @@ public class CliExecutor {
         if (command instanceof SubCommandContainer) {
             Collection<Object> subcommands = ((SubCommandContainer) command).getSubCommands();
             for (Object subcommand : subcommands) {
-                Command commandAnnotation = subcommand.getClass().getAnnotation(Command.class);
+                String name = getCommandName(subcommand);
                 if (subcommand instanceof SubCommandContainer)
                     subcommand = toCommandLine(subcommand);
-                cmd.addSubcommand(commandAnnotation.name(), subcommand);
+                cmd.addSubcommand(name, subcommand);
             }
         }
         return cmd;
     }
+
+    public static Command getCommandAnnotation(Object command) {
+        return command.getClass().getAnnotation(Command.class);
+    }
+
+    public static String getCommandName(Object command) {
+        if (getCommandAnnotation(command) == null)
+            throw new IllegalStateException("Command has no annotation: " + command.getClass().getName());
+        return getCommandAnnotation(command).name();
+    }
+
+    private static void addOrReplace(List<Object> commands, Object command) {
+        String name = getCommandName(command);
+        for (int i=0 ; i < commands.size() ; i++) {
+            if (getCommandName(commands.get(i)).equals(name)) {
+                commands.set(i, command);
+                return;
+            }
+        }
+        commands.add(command);
+    }
+
+    public static Collection<Object> mergeCommands(Collection<Object> commands, Object ... overrideCommands) {
+        List<Object> result = new ArrayList<>(commands);
+        for (Object command : overrideCommands) {
+            addOrReplace(result, command);
+        }
+
+        return result;
+    }
+
 
     private static class CustomResultHandler extends CommandLine.RunAll {
 
