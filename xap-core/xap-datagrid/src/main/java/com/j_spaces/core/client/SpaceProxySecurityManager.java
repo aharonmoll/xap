@@ -98,7 +98,7 @@ public class SpaceProxySecurityManager implements IProxySecurityManager {
         SecurityContext securityContext = rj.login(new SecurityContext(credentialsProvider));
 
         cache.clear();
-        cacheIt(rj, new SecurityContext(securityContext));
+        cacheIt(rj, createSpaceContext(securityContext));
         return securityContext;
     }
 
@@ -115,25 +115,46 @@ public class SpaceProxySecurityManager implements IProxySecurityManager {
             return cachedSpaceContext;
         }
 
-        if (credentialsProvider == null)
-            throw new AuthenticationException("No credentials were provided");
-        SecurityContext securityContext = rj.login(new SecurityContext(credentialsProvider));
-        cachedSpaceContext = cacheIt(rj, new SecurityContext(securityContext));
+        final SpaceContext spaceContext = acquireContext(rj, this.credentialsProvider);
+        cachedSpaceContext = cacheIt(rj, spaceContext);
+
         return cachedSpaceContext;
+    }
+
+    @Override
+    public SpaceContext acquireContext(IRemoteSpace rs, CredentialsProvider cp) throws RemoteException {
+
+        if (cp == null) {
+            throw new AuthenticationException("No credentials were provided");
+        }
+
+        final SecurityContext securityContext = rs.login(new SecurityContext(cp));
+        final SpaceContext spaceContext = createSpaceContext(securityContext);
+        return spaceContext;
     }
 
     /**
      * Cache the security context as a SpaceContext mapped to this remote space.
      *
      * @param rj              remote space proxy
-     * @param securityContext authenticated security context
+     * @param spaceContext    space context with authenticated security context
      * @return space context
      */
-    private SpaceContext cacheIt(IRemoteSpace rj, SecurityContext securityContext) throws RemoteException {
-        SpaceContext spaceContext = proxy.getProxyRouter().getDefaultSpaceContext().createCopy(securityContext);
+    private SpaceContext cacheIt(IRemoteSpace rj, SpaceContext spaceContext) throws RemoteException {
         cache.put(rj.getSpaceUuid(), spaceContext);
         return spaceContext;
     }
+
+    /**
+     * Create a SpaceContext with authenticated security context
+     * @param securityContext authenticated security context
+     * @return a SpaceContext
+     */
+    private SpaceContext createSpaceContext(SecurityContext securityContext) {
+        final SecurityContext lightSecurityContext = new SecurityContext(securityContext);
+        return proxy.getProxyRouter().getDefaultSpaceContext().createCopy(lightSecurityContext);
+    }
+
 
     @Override
     public SpaceContext getThreadSpaceContext() {
