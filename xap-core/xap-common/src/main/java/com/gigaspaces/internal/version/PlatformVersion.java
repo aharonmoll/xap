@@ -43,7 +43,7 @@ public class PlatformVersion {
         milestone = properties.getProperty("xap.milestone", "m1");
         buildNumber = properties.getProperty("xap.build.number", "19901-10");
         revision = properties.getProperty("xap.git.sha", "unspecified");
-        product = properties.getProperty("product.name","XAP2");
+        product = properties.getProperty("product.name","XAP");
 
         shortOfficialVersion = product+" " + version + " " + milestone.toUpperCase();
         officialVersion = "GigaSpaces " + shortOfficialVersion + " (build " + buildNumber + ", revision " + revision + ")";
