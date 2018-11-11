@@ -36,14 +36,16 @@ public class PlatformVersion {
     private final int subBuildNumber;
     private final String revision;
     private final String productHelpUrl;
+    private final String product;
 
     public PlatformVersion(Properties properties) {
         version = properties.getProperty("xap.version", "14.0.0");
         milestone = properties.getProperty("xap.milestone", "m1");
         buildNumber = properties.getProperty("xap.build.number", "19901-10");
         revision = properties.getProperty("xap.git.sha", "unspecified");
+        product = properties.getProperty("product.name","XAP2");
 
-        shortOfficialVersion = "XAP " + version + " " + milestone.toUpperCase();
+        shortOfficialVersion = product+" " + version + " " + milestone.toUpperCase();
         officialVersion = "GigaSpaces " + shortOfficialVersion + " (build " + buildNumber + ", revision " + revision + ")";
 
         String[] versionTokens = version.split("\\.");
