@@ -69,7 +69,7 @@ public class SSLFilterFactory implements IOFilterFactory {
             throw new IllegalArgumentException("SSL password cannot be null (com.gs.lrmi.filter.security.password)");
         this.keystore = keystore;
         this.password = password;
-        this.PROTOCOL = System.getProperty("com.gs.lrmi.filter.security.protocol", "TLS");
+        this.PROTOCOL = System.getProperty("com.gs.lrmi.filter.security.protocol", "TLSv1.2");
     }
 
     private void createSelfSignedCertificate() {
