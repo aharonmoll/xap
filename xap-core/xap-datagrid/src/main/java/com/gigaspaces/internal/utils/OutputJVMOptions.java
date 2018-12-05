@@ -39,7 +39,7 @@ public class OutputJVMOptions {
 
     private static String getJvmOptions() {
         final String vmName = getJvmName();
-        if (vmName.equals("HOTSPOT")) {
+        if (vmName.equals("ORACLE") || vmName.equals("OPENJDK")) {
             String result = "-server -XX:+AggressiveOpts -XX:+HeapDumpOnOutOfMemoryError";
             if (!JdkVersion.isAtLeastJava18()) { // < 8
                 result += " -XX:MaxPermSize=256m";
@@ -49,7 +49,7 @@ public class OutputJVMOptions {
             return result;
         }
 
-        if (vmName.equals("J9"))
+        if (vmName.equals("IBM"))
             return "-XX:MaxPermSize=256m";
 
         return "";
@@ -60,11 +60,7 @@ public class OutputJVMOptions {
         if (vmName == null)
             return null;
         String[] split = vmName.split(" |\\(");
-        String result;
-        if (split.length > 1)
-            result = split[1];// e.g. IBM J9 VM --> J9 or Oracle HotSpot(R) --> HotSpot
-        else
-            result = split[0];
-        return result.toUpperCase();
+        // e.g. IBM J9 VM --> IBM or Oracle HotSpot(R) --> ORACLE or OpenJDK 64-Bit Server VM -> OPENJDK
+        return split[0].toUpperCase();
     }
 }
