@@ -43,8 +43,8 @@ public class OutputJVMOptions {
             String result = "-server -XX:+AggressiveOpts -XX:+HeapDumpOnOutOfMemoryError";
             if (!JdkVersion.isAtLeastJava18()) { // < 8
                 result += " -XX:MaxPermSize=256m";
-            } else if (JdkVersion.getMajorJavaVersion() == JdkVersion.JAVA_9) {
-                result += " --add-modules=ALL-SYSTEM";
+            } else if (JdkVersion.isAtLeastJava9()) {
+                result += " --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED --add-modules=ALL-SYSTEM";
             }
             return result;
         }
