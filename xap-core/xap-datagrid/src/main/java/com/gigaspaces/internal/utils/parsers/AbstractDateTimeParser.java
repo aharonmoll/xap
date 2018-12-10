@@ -19,8 +19,10 @@ package com.gigaspaces.internal.utils.parsers;
 import com.gigaspaces.logger.Constants;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,9 +47,13 @@ public abstract class AbstractDateTimeParser extends AbstractParser {
     protected java.util.Date parseDateTime(String s) throws SQLException {
         // NOTE: SimpleDateFormat is not thread-safe
         final SimpleDateFormat format = new SimpleDateFormat(_pattern);
-        final java.util.Date date = format.parse(s, new ParsePosition(0));
-        if (date == null)
-            throw new SQLException("Wrong " + _desc + " format, expected format=[" + _pattern + "], provided=[" + s + "]", "GSP", -132);
+        java.util.Date date = format.parse(s, new ParsePosition(0));
+        if (date == null) {
+            date = new java.util.Date(Long.valueOf(s));
+
+            if(date==null)
+                throw new SQLException("Wrong " + _desc + " format, expected format=[" + _pattern + "], provided=[" + s + "]", "GSP", -132);
+        }
 
         return date;
     }
