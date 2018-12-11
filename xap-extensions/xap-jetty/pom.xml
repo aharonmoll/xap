@@ -308,7 +308,7 @@
     <repositories>
         <repository>
             <id>JBoss-Thirdparty</id>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+            <url>http://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
         </repository>
         <repository>
             <id>com.springsource.repository.bundles.external</id>
@@ -316,7 +316,7 @@
         </repository>
         <repository>
             <id>jboss-public-repository-group</id>
-            <url>https://repository.jboss.org/nexus/content/groups/public</url>
+            <url>http://repository.jboss.org/nexus/content/groups/public</url>
         </repository>
         <repository>
             <id>org.openspaces</id>
