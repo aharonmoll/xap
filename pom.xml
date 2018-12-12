@@ -21,6 +21,7 @@
         <javadoc.jar.name>xap-open</javadoc.jar.name>
         <javadoc.phase>none</javadoc.phase>
         <jackson.version>2.6.2</jackson.version>
+        <jboss.domain>http://repository.jboss.org</jboss.domain>
     </properties>
 
     <scm>

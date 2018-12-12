@@ -20,7 +20,7 @@
         <repository>
             <id>repository.jboss.org-public</id>
             <name>JBoss.org Maven repository</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public</url>
+            <url>${jboss.domain}/nexus/content/groups/public</url>
         </repository>
     </repositories>
 
