@@ -80,7 +80,10 @@ public class JettyManagerRestLauncher implements Closeable {
                     initWebApps(server);
                 }
                 //fix GS-13595, 17.12.2018
-                clearOldTempWarFiles();
+                boolean sslEnabled = Boolean.getBoolean(SystemProperties.MANAGER_REST_SSL_ENABLED);
+                if (!sslEnabled) {
+                    clearOldTempWarFiles();
+                }
 
                 server.start();
             }
